@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+    <title>snake</title>
+</head>
+<body>
+    <h1 id="title">The<span id="snakeInTitle">Snake</span> game!</h1>
+    <div id="scoreAndOther">
+        <button id="startButton">START</button>
+        <label id="labelForDiff" for="Difficulty">Difficulty:</label>
+        <select name="Difficulty" id="Difficulty">
+            <option id="easyDiff" value="EASY">EASY</option>
+            <option id="mediumDiff" value="MEDIUM">MEDIUM</option>
+            <option id="hardDiff" value="HARD">HARD</option>
+        </select>
+        <h4>Current Score: <span id="currentScore">0</span></h4> 
+        <h4>High Score: <span id="highScore">0</span></h4>
+    </div>
+    <div id="gameArea">
+    </div>
+    
+</body>
+</html>
