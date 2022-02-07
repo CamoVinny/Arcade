@@ -271,11 +271,14 @@ function appleCreater(){
     // if apple generated lands on "black cell" then recall
     if(document.getElementById(appleCell).style.backgroundColor === "black"){
         appleCreater();
-    }
+        return;
+    } else {
+        document.getElementById(appleCell).style.backgroundColor = "red"
+      }
     // if apple generated lands on snake then recall
     if(document.getElementById(appleCell).style.backgroundColor === "yellowgreen") {
         appleCreater();
-        
+        return;
   } else {
     document.getElementById(appleCell).style.backgroundColor = "red"
   }
@@ -321,7 +324,8 @@ function snakeMovement(){
     //here checks if snake hit obstacales and calls function if so...
     if(document.getElementById(snaky).style.backgroundColor === "black"){       
         clearInterval(interval)
-        restartGame();        
+        restartGame();
+        return;        
     }
     //here checks if snake hit apple and if so increases size of snake
     //and increases speed of snake...
