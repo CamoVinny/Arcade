@@ -3,6 +3,8 @@ const startButton = document.getElementById("startButton");
 const currentScore = document.getElementById("currentScore")
 const highScore = document.getElementById("highScore")
 const difficulty = document.getElementById("Difficulty")
+const popUp = document.getElementById("loserPopUp")
+const popUpButton = document.getElementById("popUpButton")
 let resetSnake = ["4,5","3,5","2,5","1,5","0,5"];
 let playerCurrScore = 0
 let bestScore = 0
@@ -11,20 +13,13 @@ let snakeDirection = "down";
 let interval
 let intervalNum = 500
 let gameRunning = false
-
-
 startButton.addEventListener("click", function(){   
     if(gameRunning === false){
         interval = setInterval(tick, intervalNum);
-    } 
-     
+    }      
     gameRunning = true
 });
-
-
-
-
-
+//function below creates row with 40 cells in each row and assigns cells with IDs
 function makeRow(rowIndex){   
     let row = document.createElement("TR");
         for (let i = 0; i < 40; i++){
@@ -34,15 +29,14 @@ function makeRow(rowIndex){
         }       
     board.appendChild(row);        
 }
-    
+//function below creates 40 rows forming the playing grid    
 function createGrid() {
     for (let i = 0; i < 40; i++){
         makeRow(i);
     }       
 }
 createGrid();
-
-
+//listener below is attached to the difficulty list witch changes game areas..
 difficulty.addEventListener("change", function(){
     if(difficulty.value === "EASY"){
         document.getElementById("6,12").style.backgroundColor = "darkSlateGrey"
@@ -109,6 +103,7 @@ difficulty.addEventListener("change", function(){
         document.getElementById("34,27").style.backgroundColor = "darkSlateGrey"
         document.getElementById("32,29").style.backgroundColor = "darkSlateGrey"
         document.getElementById("30,31").style.backgroundColor = "darkSlateGrey"
+        document.getElementById("Difficulty").style.backgroundColor = "yellowGreen"
     }
     if(difficulty.value === "MEDIUM"){
         document.getElementById("6,12").style.backgroundColor = "black"
@@ -136,7 +131,6 @@ difficulty.addEventListener("change", function(){
         document.getElementById("33,28").style.backgroundColor = "black"
         document.getElementById("31,30").style.backgroundColor = "black"
         document.getElementById("29,31").style.backgroundColor = "black"
-
         document.getElementById("0,12").style.backgroundColor = "darkSlateGrey"
         document.getElementById("1,12").style.backgroundColor = "darkSlateGrey"
         document.getElementById("2,13").style.backgroundColor = "darkSlateGrey"
@@ -176,7 +170,7 @@ difficulty.addEventListener("change", function(){
         document.getElementById("34,27").style.backgroundColor = "darkSlateGrey"
         document.getElementById("32,29").style.backgroundColor = "darkSlateGrey"
         document.getElementById("30,31").style.backgroundColor = "darkSlateGrey" 
-
+        document.getElementById("Difficulty").style.backgroundColor = "orange"
     } else if(difficulty.value === "HARD"){
         document.getElementById("6,12").style.backgroundColor = "black"
         document.getElementById("7,12").style.backgroundColor = "black"
@@ -241,48 +235,44 @@ difficulty.addEventListener("change", function(){
         document.getElementById("35,25").style.backgroundColor = "black"
         document.getElementById("34,27").style.backgroundColor = "black"
         document.getElementById("32,29").style.backgroundColor = "black"
-        document.getElementById("30,31").style.backgroundColor = "black"  
+        document.getElementById("30,31").style.backgroundColor = "black"
+        document.getElementById("Difficulty").style.backgroundColor = "orangered"  
     }
 })
-
-
-
-
+//function below checks and changes snake to green
 function startingSnake(globalSnake){   
     for (let i = 0; i < globalSnake.length; i++) {
         document.getElementById(globalSnake[i]).style.backgroundColor = "yellowgreen"        
     }
 }
 startingSnake(globalSnake);
-/////////////////////////////////////////////////////////////////
+//this listener checks for key presses
 document.addEventListener('keydown', basicControls);
-
+//this function reads key presses and set global snakedirection based on said key...
 function basicControls(arrow) {
-    //if this pressed decrease row number by 1
     if (arrow.key === "ArrowUp" && snakeDirection != "down"){
        snakeDirection = "up"
     }
-    //if this pressed increase row number by 1
     if (arrow.key === "ArrowDown" && snakeDirection != "up"){
-       snakeDirection = "down"                                  //functioning as expected
-    }
-    //if this pressed decrease column number by 1
+       snakeDirection = "down"                     
+    }1
     if (arrow.key === "ArrowLeft" && snakeDirection != "right"){
        snakeDirection = "left"
     }
-    //if this pressed increase column number by 1
     if (arrow.key === "ArrowRight" && snakeDirection != "left"){
        snakeDirection = "right"
     }        
 }
-////////////////////////////////////////////////////////////////
+//function below creates random apples in game area...
 function appleCreater(){
     let rowIndex = Math.floor(Math.random() * 39);
     let columnIndex = Math.floor(Math.random() * 39);
     let appleCell = rowIndex.toString() + "," + columnIndex.toString()
+    // if apple generated lands on "black cell" then recall
     if(document.getElementById(appleCell).style.backgroundColor === "black"){
         appleCreater();
     }
+    // if apple generated lands on snake then recall
     if(document.getElementById(appleCell).style.backgroundColor === "yellowgreen") {
         appleCreater();
         
@@ -290,22 +280,19 @@ function appleCreater(){
     document.getElementById(appleCell).style.backgroundColor = "red"
   }
 }
+//function below triples apples on gamearea at given time
 function appleCreaterExtension(){
     for (let i = 0; i <= 2; i++) {
         appleCreater();        
     }
 }
-
-let snakeHead = document.getElementById("0,5")
-
-
-
+//fuction below is bread and butter of game...
 function snakeMovement(){
-    
+    //here it takes incoming cell IDs and converts to numbers...
     let splitter = globalSnake[0].split(",");
     let rowCord = parseInt(splitter[0]);
     let columnCord = parseInt(splitter[1]);
-    
+    //here it reads global snake direction and makes changes to numbers given..,
     if(snakeDirection === "up"){
         rowCord--
     }
@@ -318,47 +305,48 @@ function snakeMovement(){
     if(snakeDirection === "right"){
         columnCord++
     }
-
-    //////////////////////////////////// bottem IFs need to be finished!!
-    if(columnCord <= -1 || rowCord <= -1 || columnCord >= 40 || rowCord >= 40){
-        // needs to restart game somehow
+    //here its checking to see if snake hit walls and calling function if so...
+    if(columnCord <= -1 || rowCord <= -1 || columnCord >= 40 || rowCord >= 40){       
         clearInterval(interval);
         restartGame();
     } 
+    //here takes numbers and throws them back into string
     let snaky = rowCord.toString() + "," + columnCord.toString();
-    if(document.getElementById(snaky).style.backgroundColor === "yellowgreen"){
-        // needs to restart game somehow        
+    //here checks to see if snake hit itself and calls functions if so...
+    if(document.getElementById(snaky).style.backgroundColor === "yellowgreen"){       
         clearInterval(interval);
         restartGame();
         return;
     } 
-    if(document.getElementById(snaky).style.backgroundColor === "black"){
-        // needs to restart game somehow
+    //here checks if snake hit obstacales and calls function if so...
+    if(document.getElementById(snaky).style.backgroundColor === "black"){       
         clearInterval(interval)
-        restartGame();
-        
+        restartGame();        
     }
+    //here checks if snake hit apple and if so increases size of snake
+    //and increases speed of snake...
     if (document.getElementById(snaky).style.backgroundColor === "red") {
-        appleCreater();
-        //needs to increase speed
+        appleCreater();        
         clearInterval(interval)
         let speedy = intervalNum - 10
-         interval = setInterval(tick, speedy)
-        playerCurrScore++;
-        console.log(speedy)
-        intervalNum = speedy
-    } else{
+        let num = intervalNum - 5                  
+         if(speedy <= 100){
+             interval = setInterval(tick, num)
+             intervalNum = num
+         } else {
+             interval = setInterval(tick, speedy)
+             intervalNum = speedy
+         }
+        playerCurrScore++;       
+    } 
+    else{
         document.getElementById(globalSnake[globalSnake.length - 1]).style.backgroundColor = "darkSlateGrey";
         globalSnake.pop();
     }   
-    globalSnake.unshift(rowCord.toString() + "," + columnCord.toString());      
-        
-    console.log(globalSnake);
-    
+    globalSnake.unshift(rowCord.toString() + "," + columnCord.toString());
 }
-
-function tick() {    
-    // this is an incremental change that happens to the state every time you update...
+//function below is called on interval
+function tick() {   
     snakeMovement();    
     startingSnake(globalSnake);
     currentScore.innerHTML = playerCurrScore;
@@ -366,20 +354,24 @@ function tick() {
         highScore.innerHTML = bestScore++;
     }
   }
-
 appleCreaterExtension()
-
-function restartGame(){
-    
+//function below is shows loser popup
+function loserPopUp(){
+    popUp.style.display = "block";
+}
+popUpButton.addEventListener("click", function(){
+    popUp.style.display = "none"
+})
+//function below is called only when game is over... and resets certaion conditions.
+function restartGame(){    
     for (let i = 0; i < globalSnake.length; i++) {
         document.getElementById(globalSnake[i]).style.backgroundColor = "darkSlateGrey"
     }
     globalSnake = [...resetSnake]
     startingSnake(resetSnake);
-    console.log(globalSnake);
-    console.log(resetSnake)
     playerCurrScore = 0
     intervalNum = 500
     gameRunning = false
     snakeDirection = "down"
+    loserPopUp();
 }
